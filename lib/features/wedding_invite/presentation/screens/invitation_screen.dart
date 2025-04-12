@@ -4,6 +4,7 @@ import 'story_section.dart';
 import 'wedding_plan_section.dart';
 import 'venue_section.dart';
 import 'rsvp_section.dart';
+import 'package:just_audio/just_audio.dart';
 
 class InvitationScreen extends StatefulWidget {
   const InvitationScreen({super.key});
@@ -14,6 +15,25 @@ class InvitationScreen extends StatefulWidget {
 
 class _InvitationScreenState extends State<InvitationScreen> {
   final PageController _controller = PageController();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    _initAudio();
+  }
+
+  Future<void> _initAudio() async {
+    await _audioPlayer.setAsset('assets/audio/entrada.mp3');
+    _audioPlayer.play();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _audioPlayer.dispose();
+    super.dispose();
+  }
 
   final List<Widget> _pages = const [
     LandingSection(),
