@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <base href="$FLUTTER_BASE_HREF">
+    <base href="$FLUTTER_BASE_HREF" />
 
-    <meta charset="UTF-8">
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-    <meta name="description" content="Invitación de boda de Dani & Belén">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Invitación de Dani y Belén 💍" />
 
     <title>Invitación Dani & Belén</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <link rel="manifest" href="manifest.json" />
     <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
-    <!-- Splash -->
     <style>
+      body {
+        margin: 0;
+      }
+
       #splash-screen {
-        background: #f6f2eb;
-        color: #6d6875;
-        font-family: sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        width: 100vw;
         position: fixed;
         top: 0;
         left: 0;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fdf6f0;
+        color: #6d6875;
+        font-family: 'Arial', sans-serif;
+        font-size: 1.5rem;
         z-index: 9999;
       }
     </style>
   </head>
   <body>
     <div id="splash-screen">
-      <h1>Cargando amor... 💕</h1>
+      <div>Cargando amor... 💕</div>
     </div>
 
     <script src="main.dart.js" type="application/javascript"></script>
     <script>
       window.addEventListener("flutter-first-frame", function () {
-        document.getElementById("splash-screen")?.remove();
+        const splash = document.getElementById("splash-screen");
+        if (splash) splash.remove();
       });
     </script>
   </body>
