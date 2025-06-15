@@ -20,6 +20,8 @@
 
       #splash-screen {
         position: fixed;
+        min-height: 100vh;            /* Fallback general */
+        min-height: -webkit-fill-available; /* Ajuste para Safari iOS */
         top: 0;
         left: 0;
         height: 100vh;

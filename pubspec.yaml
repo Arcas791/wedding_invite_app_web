@@ -33,6 +33,7 @@ dependencies:
   go_router: ^13.0.0
   url_launcher: ^6.2.5
   just_audio: ^0.9.36
+  http: ^0.13.0
 
 
   # The following adds the Cupertino Icons font to your application.
