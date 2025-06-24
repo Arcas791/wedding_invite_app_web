@@ -64,6 +64,7 @@ flutter:
     - assets/images/historia2.jpg
     - assets/images/historia3.jpg
     - assets/images/masia.jpg
+    - assets/images/el_barto.jpg
     - assets/audio/entrada.mp3
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

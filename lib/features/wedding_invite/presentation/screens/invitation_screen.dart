@@ -6,6 +6,7 @@ import 'story_section.dart';
 import 'wedding_plan_section.dart';
 import 'venue_section.dart';
 import 'rsvp_section.dart';
+import 'fake_credit_section.dart';
 
 class InvitationScreen extends StatefulWidget {
   const InvitationScreen({super.key});
@@ -17,6 +18,7 @@ class InvitationScreen extends StatefulWidget {
 class _InvitationScreenState extends State<InvitationScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _musicaIniciada = false;
+  bool formEnviado = false;
 
   @override
   void initState() {
@@ -42,21 +44,26 @@ class _InvitationScreenState extends State<InvitationScreen> {
     setState(() => _musicaIniciada = true);
   }
 
+  void onFormularioEnviado() {
+    setState(() {
+      formEnviado = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _iniciarMusica,
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: const [
-              LandingSection(),
-              StorySection(),
-              WeddingPlanSection(),
-              VenueSection(),
-              RsvpSection(),
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5EBDD),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const LandingSection(),
+            const StorySection(),
+            const WeddingPlanSection(),
+            const VenueSection(),
+            RsvpSection(onConfirmado: onFormularioEnviado),
+            if (formEnviado) const FakeCreditSection(),
+          ],
         ),
       ),
     );

@@ -39,7 +39,11 @@ class VenueSection extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Masía "Mas d\'Alzedo", en Riba-roja de Túria. Un lugar con mucho encanto donde celebraremos cada momento de este día tan especial 🤗.',
+            'Mas d\'Alzedo',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          Text(
+            'Esta masía, en Riba-roja de Túria, es un sitio que nos ha enamorado desde el primer momento que la vismos; creemos que es un lugar con mucho encanto donde celebraremos cada momento de este día tan especial con todos vosotros 🤗🤗🤗.',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 16),
