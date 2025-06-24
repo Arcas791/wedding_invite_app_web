@@ -13,7 +13,7 @@ class _LandingSectionState extends State<LandingSection> {
   late Timer _timer;
 
   final DateTime weddingDate =
-      DateTime(2025, 9, 19, 18, 0); // 29 junio 2025 a las 18:00
+      DateTime(2025, 9, 19, 18, 0); // 19 sept 2025 a las 18:00
 
   @override
   void initState() {
@@ -46,37 +46,48 @@ class _LandingSectionState extends State<LandingSection> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset('assets/images/novios.jpg', fit: BoxFit.cover),
-          Container(color: Colors.black.withOpacity(0.3)),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Belén & Dani',
-                style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                '19 • Septiembre • 2025',
-                style: TextStyle(fontSize: 20, color: Colors.white70),
-              ),
-              const SizedBox(height: 30),
-              Text(
-                _format(_remaining),
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              )
-            ],
-          )
-        ],
-      ),
+    final double sectionHeight = MediaQuery.of(context).size.height * 0.95;
+
+    return Stack(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          height: sectionHeight,
+          child: Image.asset(
+            'assets/images/novios.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
+        Container(
+          height: sectionHeight,
+          color: Colors.black.withOpacity(0.3),
+        ),
+        SizedBox(
+          height: sectionHeight,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '¡Nos casamos!',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineLarge
+                      ?.copyWith(color: Colors.white),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  _format(_remaining),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

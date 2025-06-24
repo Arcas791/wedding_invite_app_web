@@ -24,14 +24,13 @@ class _RsvpSectionState extends State<RsvpSection> {
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final rsvp = Rsvp(
-          name: _nameController.text,
-          isAttending: attending,
-          allergies: _allergiesController.text,
-          songRequests: _songsController.text,
-          children: _childrenController.text,
-          tomorrowland: wantsTomorrowland
-          // puedes añadir los nuevos campos en la entidad si quieres persistirlos
-          );
+        name: _nameController.text,
+        isAttending: attending,
+        allergies: _allergiesController.text,
+        songRequests: _songsController.text,
+        children: _childrenController.text,
+        tomorrowland: wantsTomorrowland,
+      );
 
       final repository = RsvpRepositoryImpl();
       final usecase = ConfirmRsvp(repository);
@@ -46,7 +45,7 @@ class _RsvpSectionState extends State<RsvpSection> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('¡Gracias!'),
-          content: const Text('Tu respuesta ha sido registrada 🥰'),
+          content: const Text('Hemos recibido tu confirmación.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
@@ -55,126 +54,79 @@ class _RsvpSectionState extends State<RsvpSection> {
           ],
         ),
       );
-
-      _formKey.currentState!.reset();
-      _nameController.clear();
-      _allergiesController.clear();
-      _songsController.clear();
-      _childrenController.clear();
-      setState(() {
-        attending = true;
-        wantsTomorrowland = false;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.of(context).size.width > 600;
-
-    return Container(
-      width: double.infinity,
-      color: const Color(0xFFF6F2EB),
-      padding: EdgeInsets.symmetric(
-        vertical: 40,
-        horizontal: isWide ? 100 : 24,
-      ),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 700),
-          child: Form(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'Confirma tu asistencia',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 30),
+          Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Center(
-                  child: Text(
-                    '¿Vendrás a celebrarlo con nosotros?',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF6D6875),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Tu nombre',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Por favor, escribe tu nombre' : null,
+                  decoration: const InputDecoration(labelText: 'Nombre'),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Por favor, introduce tu nombre'
+                      : null,
                 ),
-                const SizedBox(height: 20),
-                SwitchListTile(
-                  title: const Text('¿Asistirás?'),
-                  value: attending,
-                  onChanged: (value) => setState(() => attending = value),
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _allergiesController,
                   decoration: const InputDecoration(
-                    labelText: 'Alergias o intolerancias',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 2,
+                      labelText: 'Alergias o preferencias'),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _songsController,
                   decoration: const InputDecoration(
-                    labelText: 'Peticiones musicales',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 2,
+                      labelText: 'Canciones que no pueden faltar'),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _childrenController,
+                  decoration:
+                      const InputDecoration(labelText: 'Número de niños'),
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: const InputDecoration(
-                    labelText: '¿Cuántos niños asistirán?',
-                    border: OutlineInputBorder(),
-                  ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 CheckboxListTile(
-                  title: const Text(
-                      '¿Te apuntarías el año que viene al Tomorrowland?'),
+                  value: attending,
+                  onChanged: (value) => setState(() => attending = value!),
+                  title: const Text('Voy a asistir'),
+                ),
+                CheckboxListTile(
                   value: wantsTomorrowland,
                   onChanged: (value) =>
-                      setState(() => wantsTomorrowland = value ?? false),
+                      setState(() => wantsTomorrowland = value!),
+                  title: const Text('¡Me apunto a Tomorrowland!'),
                 ),
-                const SizedBox(height: 30),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _submitForm,
-                    child: const Text('Confirmar asistencia'),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
                   ),
+                  child: const Text('Confirmar'),
                 ),
-                const SizedBox(height: 30),
-                if (formSubmitted)
-                  Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text('Número de cuenta para regalito 💌:'),
-                        SizedBox(height: 8),
-                        SelectableText(
-                          'ES76 1234 5678 9012 3456 7890',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

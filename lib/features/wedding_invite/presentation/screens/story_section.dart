@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 class StorySection extends StatefulWidget {
@@ -10,153 +11,96 @@ class StorySection extends StatefulWidget {
 class _StorySectionState extends State<StorySection> {
   late final PageController _pageController;
   int _currentPage = 0;
+  Timer? _carouselTimer;
+
+  final List<String> _images = [
+    'assets/images/historia1.jpg',
+    'assets/images/historia2.jpg',
+    'assets/images/historia3.jpg',
+  ];
+
+  final String _storyText = '''
+Todo empezó un sábado cualquiera con el típico "esmorçar de la terreta"...
+Desde ese momento, cada paso lo hemos dado juntos y es lo que nos ha traido aquí ❤.
+Queremos hacer de este día algo especial con todos vosotros que nos habéis estado acompañando...''';
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8);
+    _startAutoPlay();
+  }
+
+  void _startAutoPlay() {
+    _carouselTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      final nextPage = (_currentPage + 1) % _images.length;
+      _pageController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      setState(() {
+        _currentPage = nextPage;
+      });
+    });
   }
 
   @override
   void dispose() {
+    _carouselTimer?.cancel();
     _pageController.dispose();
     super.dispose();
   }
 
   void _goToPage(int index) {
+    _carouselTimer?.cancel();
     _pageController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+    setState(() {
+      _currentPage = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.of(context).size.width > 800;
+    final double sectionHeight = MediaQuery.of(context).size.height * 0.8;
 
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      color: const Color(0xFFF8EDEB),
-      padding: EdgeInsets.symmetric(
-        vertical: 40,
-        horizontal: isWide ? 100 : 24,
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 40),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            'Nuestra historia',
-            style: TextStyle(
-              fontSize: isWide ? 32 : 28,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF6D6875),
+          SizedBox(
+            height: sectionHeight * 0.5,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: _images.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      _images[index],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: isWide ? _buildWideLayout() : _buildColumnLayout(),
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Text(
+              _storyText,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildColumnLayout() {
-    return Column(
-      children: [
-        SizedBox(
-          height: 300,
-          child: PageView(
-            controller: _pageController,
-            onPageChanged: (index) => setState(() => _currentPage = index),
-            physics: const PageScrollPhysics(),
-            children: [
-              _buildImage('assets/images/historia1.jpg'),
-              _buildImage('assets/images/historia2.jpg'),
-              _buildImage('assets/images/historia3.jpg'),
-            ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        const Text(
-          'Nos conocimos hace unos años...\nY desde entonces, cada paso nos ha traído hasta aquí.\nGracias por acompañarnos en este día tan especial.',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16,
-            color: Color(0xFF444444),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildWideLayout() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 400,
-                child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (index) =>
-                      setState(() => _currentPage = index),
-                  physics: const PageScrollPhysics(),
-                  children: [
-                    _buildImage('assets/images/historia1.jpg'),
-                    _buildImage('assets/images/historia2.jpg'),
-                    _buildImage('assets/images/historia3.jpg'),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: _currentPage > 0
-                        ? () => _goToPage(_currentPage - 1)
-                        : null,
-                    icon: const Icon(Icons.arrow_back_ios),
-                  ),
-                  IconButton(
-                    onPressed: _currentPage < 2
-                        ? () => _goToPage(_currentPage + 1)
-                        : null,
-                    icon: const Icon(Icons.arrow_forward_ios),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-        const SizedBox(width: 40),
-        const Expanded(
-          child: Text(
-            'Nos conocimos hace unos años...\nY desde entonces, cada paso nos ha traído hasta aquí.\nGracias por acompañarnos en este día tan especial.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18,
-              color: Color(0xFF444444),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildImage(String path) {
-    return Center(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.asset(
-          path,
-          fit: BoxFit.contain,
-          width: 300,
-        ),
       ),
     );
   }

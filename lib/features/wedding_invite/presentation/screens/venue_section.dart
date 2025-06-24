@@ -4,7 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 class VenueSection extends StatelessWidget {
   const VenueSection({super.key});
 
-  final String mapsUrl = 'https://www.google.com/maps?rlz=1C1CHBF_esES878ES878&um=1&ie=UTF-8&fb=1&gl=es&sa=X&geocode=KV_EukngWGANMRsOywHA8aks&daddr=Av.+del+Turia,+1,+46190+Riba-roja+de+T%C3%BAria,+Valencia';
+  final String mapsUrl =
+      'https://www.google.com/maps?rlz=1C1CHBF_esES878ES878&um=1&ie=UTF-8&fb=1&gl=es&sa=X&geocode=KV_EukngWGANMRsOywHA8aks&daddr=Av.+del+Turia,+1,+46190+Riba-roja+de+T%C3%BAria,+Valencia';
 
   Future<void> _launchMaps() async {
     final Uri uri = Uri.parse(mapsUrl);
@@ -17,19 +18,14 @@ class VenueSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      color: const Color(0xFFECE4DB),
+    return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             'La Masía',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF6D6875),
-            ),
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(height: 20),
           ClipRRect(
@@ -42,22 +38,22 @@ class VenueSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Masía El Encanto\nCarrer de l\'Amor, 123\nValencia',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
+          Text(
+            'Masía "Mas d\'Alzedo", en Riba-roja de Túria. Un lugar con mucho encanto donde celebraremos cada momento de este día tan especial 🤗.',
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: 12),
-          ElevatedButton.icon(
+          const SizedBox(height: 16),
+          ElevatedButton(
             onPressed: _launchMaps,
-            icon: const Icon(Icons.map),
-            label: const Text('Ver en Google Maps'),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            '🅿 Parking gratuito disponible\n🛏 Alojamiento cercano recomendado\n👗 Ropa elegante (informal formal)',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 14),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Ver en Google Maps'),
           ),
         ],
       ),
