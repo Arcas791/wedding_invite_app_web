@@ -21,6 +21,8 @@ class _RsvpSectionState extends State<RsvpSection> {
   final _songsController = TextEditingController();
   final _childrenCountController = TextEditingController();
   final _companionNameController = TextEditingController();
+  final List<TextEditingController> _childNameControllers = [];
+  final List<TextEditingController> _childAgeControllers = [];
 
   bool attending = false;
   bool needsBus = false;
@@ -68,13 +70,6 @@ class _RsvpSectionState extends State<RsvpSection> {
     }
   }
 
-  Widget _buildSeparator() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Divider(color: Colors.grey.shade400),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -90,7 +85,6 @@ class _RsvpSectionState extends State<RsvpSection> {
             key: _formKey,
             child: Column(
               children: [
-                // Nombre y Apellidos
                 Row(
                   children: [
                     Expanded(
@@ -115,10 +109,7 @@ class _RsvpSectionState extends State<RsvpSection> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 24),
-
-                // Asistencia
                 CheckboxListTile(
                   value: attending,
                   onChanged: (value) {
@@ -132,98 +123,140 @@ class _RsvpSectionState extends State<RsvpSection> {
                   },
                   title: const Text('Voy a asistir'),
                 ),
-
                 if (attending)
-                  CheckboxListTile(
-                    value: needsBus,
-                    onChanged: (value) => setState(() {
-                      needsBus = value!;
-                      if (!needsBus) selectedBus = null;
-                    }),
-                    title: const Text('Necesito autobús'),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24.0),
+                    child: Column(
+                      children: [
+                        CheckboxListTile(
+                          value: needsBus,
+                          onChanged: (value) => setState(() {
+                            needsBus = value!;
+                            if (!needsBus) selectedBus = null;
+                          }),
+                          title: const Text('Necesito autobús'),
+                        ),
+                        if (needsBus)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 24.0),
+                            child: Column(
+                              children: [
+                                RadioListTile(
+                                  value: 'valencia',
+                                  groupValue: selectedBus,
+                                  onChanged: (value) => setState(
+                                      () => selectedBus = value as String?),
+                                  title: const Text('Autobús desde Valencia'),
+                                ),
+                                RadioListTile(
+                                  value: 'viver',
+                                  groupValue: selectedBus,
+                                  onChanged: (value) => setState(
+                                      () => selectedBus = value as String?),
+                                  title: const Text('Autobús desde Viver'),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-
-                if (attending && needsBus)
-                  Column(
-                    children: [
-                      RadioListTile(
-                        value: 'valencia',
-                        groupValue: selectedBus,
-                        onChanged: (value) =>
-                            setState(() => selectedBus = value as String?),
-                        title: const Text('Autobús desde Valencia'),
-                      ),
-                      RadioListTile(
-                        value: 'viver',
-                        groupValue: selectedBus,
-                        onChanged: (value) =>
-                            setState(() => selectedBus = value as String?),
-                        title: const Text('Autobús desde Viver'),
-                      ),
-                    ],
-                  ),
-
-                // Acompañante
                 CheckboxListTile(
                   value: hasCompanion,
                   onChanged: (value) => setState(() => hasCompanion = value!),
                   title: const Text('Voy con acompañante'),
                 ),
-                AnimatedSwitcher(
-                  duration: Duration(milliseconds: 300),
-                  child: hasCompanion
-                      ? Padding(
-                          padding: EdgeInsets.only(left: 24.0),
-                          child: TextFormField(
-                            controller: _companionNameController,
-                            decoration: const InputDecoration(
-                                labelText: 'Nombre del acompañante'),
-                            validator: (value) {
-                              if (hasCompanion &&
-                                  (value == null || value.isEmpty)) {
-                                return 'Introduce el nombre del acompañante';
-                              }
-                              return null;
-                            },
-                          ),
-                        )
-                      : SizedBox.shrink(),
-                ),
-
-                // Niños
+                if (hasCompanion)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24.0),
+                    child: TextFormField(
+                      controller: _companionNameController,
+                      decoration: const InputDecoration(
+                          labelText: 'Nombre del acompañante'),
+                      validator: (value) {
+                        if (hasCompanion && (value == null || value.isEmpty)) {
+                          return 'Introduce el nombre del acompañante';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                 CheckboxListTile(
                   value: hasChildren,
-                  onChanged: (value) => setState(() => hasChildren = value!),
+                  onChanged: (value) {
+                    setState(() {
+                      hasChildren = value!;
+                      _childNameControllers.clear();
+                      _childAgeControllers.clear();
+                    });
+                  },
                   title: const Text('Vamos con niños'),
                 ),
-                AnimatedSwitcher(
-                  duration: Duration(milliseconds: 300),
-                  child: hasChildren
-                      ? Padding(
-                          padding: EdgeInsets.only(left: 24.0),
-                          child: TextFormField(
-                            controller: _childrenCountController,
-                            decoration: const InputDecoration(
-                                labelText: '¿Cuántos niños?'),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            validator: (value) {
-                              if (hasChildren &&
-                                  (value == null || value.isEmpty)) {
-                                return 'Indica cuántos niños';
+                if (hasChildren)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24.0),
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _childrenCountController,
+                          decoration: const InputDecoration(
+                              labelText: '¿Cuántos niños?'),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          validator: (value) {
+                            if (hasChildren &&
+                                (value == null || value.isEmpty)) {
+                              return 'Indica cuántos niños';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              final count = int.tryParse(value) ?? 0;
+                              _childNameControllers.clear();
+                              _childAgeControllers.clear();
+                              for (int i = 0; i < count && i < 3; i++) {
+                                _childNameControllers
+                                    .add(TextEditingController());
+                                _childAgeControllers
+                                    .add(TextEditingController());
                               }
-                              return null;
-                            },
+                            });
+                          },
+                        ),
+                        for (int i = 0; i < _childNameControllers.length; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 24.0, top: 12),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: _childNameControllers[i],
+                                    decoration: InputDecoration(
+                                        labelText: 'Nombre del niño ${i + 1}'),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: _childAgeControllers[i],
+                                    decoration: InputDecoration(
+                                        labelText: 'Edad del niño ${i + 1}'),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        )
-                      : SizedBox.shrink(),
-                ),
-
+                      ],
+                    ),
+                  ),
                 const SizedBox(height: 24),
-
-                // Alergias y canciones
                 TextFormField(
                   controller: _allergiesController,
                   decoration: const InputDecoration(
@@ -235,7 +268,6 @@ class _RsvpSectionState extends State<RsvpSection> {
                   decoration: const InputDecoration(
                       labelText: 'Canciones que no pueden faltar'),
                 ),
-
                 const SizedBox(height: 16),
                 CheckboxListTile(
                   value: wantsTomorrowland,
@@ -243,7 +275,6 @@ class _RsvpSectionState extends State<RsvpSection> {
                       setState(() => wantsTomorrowland = value!),
                   title: const Text('¡Me apunto a Tomorrowland!'),
                 ),
-
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _submitForm,
