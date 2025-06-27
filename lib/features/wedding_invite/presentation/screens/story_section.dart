@@ -20,9 +20,9 @@ class _StorySectionState extends State<StorySection> {
   ];
 
   final String _storyText = '''
-Todo empezó un sábado cualquiera con el típico "esmorçar de la terreta"...
+Todo empezó un sábado cualquiera con el típico "esmorçar un la terreta"...
 Desde ese momento, cada paso lo hemos dado juntos y es lo que nos ha traido aquí ❤.
-Queremos hacer de este día algo especial con todos vosotros que nos habéis estado acompañando...''';
+Queremos hacer de este día algo especial con todos vosotros que nos habéis estado acompañando!''';
 
   @override
   void initState() {
