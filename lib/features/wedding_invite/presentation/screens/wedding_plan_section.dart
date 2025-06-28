@@ -11,10 +11,13 @@ class WeddingPlanSection extends StatefulWidget {
 class _WeddingPlanSectionState extends State<WeddingPlanSection>
     with TickerProviderStateMixin {
   final List<_Evento> eventos = [
-    _Evento('18:00', 'Ceremonia', Icons.volunteer_activism),
-    _Evento('19:00', 'Cóctel', Icons.local_bar),
-    _Evento('21:00', 'Cena', Icons.restaurant),
-    _Evento('23:00', 'Fiesta 🎉', Icons.music_note),
+    _Evento('16:15h', 'Autobús', Icons.directions_bus_filled),
+    _Evento('17:30h', 'Recepción', Icons.waving_hand),
+    _Evento('18:00h', 'Ceremonia', Icons.volunteer_activism),
+    _Evento('19:00h', 'Cóctel', Icons.local_bar),
+    _Evento('20:30h', 'Cena', Icons.restaurant_menu),
+    _Evento('22:30h', 'Fiesta 🎉', Icons.music_note),
+    _Evento('03:30h', '¡A casa!', Icons.bedtime),
   ];
 
   final List<AnimationController> _controllers = [];
