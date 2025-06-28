@@ -345,18 +345,25 @@ class _RsvpSectionState extends State<RsvpSection>
                         child: Column(
                           children: [
                             RadioListTile(
-                              value: 'valencia',
+                              value: 'Valencia',
                               groupValue: selectedBus,
                               onChanged: (value) => setState(
                                   () => selectedBus = value as String?),
                               title: const Text('Autobús desde Valencia'),
                             ),
                             RadioListTile(
-                              value: 'viver',
+                              value: 'Viver',
                               groupValue: selectedBus,
                               onChanged: (value) => setState(
                                   () => selectedBus = value as String?),
                               title: const Text('Autobús desde Viver'),
+                            ),
+                            RadioListTile(
+                              value: 'Alaquás',
+                              groupValue: selectedBus,
+                              onChanged: (value) => setState(
+                                  () => selectedBus = value as String?),
+                              title: const Text('Autobús desde Alaquás'),
                             ),
                           ],
                         ),
@@ -425,6 +432,7 @@ class _RsvpSectionState extends State<RsvpSection>
                         }
                         return null;
                       },
+                      onChanged: (_) => setState(() {}),
                     ),
                     for (int i = 0; i < childCount; i++)
                       Padding(
@@ -435,7 +443,7 @@ class _RsvpSectionState extends State<RsvpSection>
                               child: TextFormField(
                                 controller: _childNameControllers[i],
                                 decoration: InputDecoration(
-                                    labelText: 'Nombre niño/a ${i + 1}'),
+                                    labelText: 'Nombre ${i + 1}'),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -476,13 +484,22 @@ class _RsvpSectionState extends State<RsvpSection>
                   TextFormField(
                     controller: _allergiesController,
                     decoration: const InputDecoration(
-                        labelText: 'Alergias o preferencias'),
+                      labelText: 'Alergias o intolerancias',
+                      isDense: false,
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _songsController,
                     decoration: const InputDecoration(
-                        labelText: 'Canciones que no pueden faltar'),
+                      labelText: 'Canciones que no falten',
+                      isDense: false,
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    ),
+                    maxLines: null,
+                    minLines: 1,
+                    keyboardType: TextInputType.multiline,
                   ),
                   const SizedBox(height: 16),
                   CheckboxListTile(
