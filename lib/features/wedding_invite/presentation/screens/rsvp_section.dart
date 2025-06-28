@@ -34,9 +34,18 @@ class _RsvpSectionState extends State<RsvpSection>
   bool formSubmitted = false;
   bool isSubmitting = false;
 
+  late final AnimationController _submitAnimationController =
+      AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1000),
+  );
+
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => isSubmitting = true);
+      setState(() {
+        isSubmitting = true;
+        _submitAnimationController.repeat();
+      });
 
       final rsvp = Rsvp(
         name: _nameController.text + " " + _surnameController.text,
@@ -55,6 +64,7 @@ class _RsvpSectionState extends State<RsvpSection>
       setState(() {
         formSubmitted = true;
         isSubmitting = false;
+        _submitAnimationController.stop();
         _currentStep = 3; // Colapsar el último paso
       });
 
@@ -76,6 +86,12 @@ class _RsvpSectionState extends State<RsvpSection>
     }
   }
 
+  @override
+  void dispose() {
+    _submitAnimationController.dispose();
+    super.dispose();
+  }
+
   List<Step> getSteps() {
     return [
       Step(
@@ -86,28 +102,32 @@ class _RsvpSectionState extends State<RsvpSection>
             Text('Datos personales')
           ],
         ),
-        content: Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Nombre'),
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Introduce tu nombre'
-                    : null,
+        content: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: Row(
+            key: ValueKey(_currentStep),
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Nombre'),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Introduce tu nombre'
+                      : null,
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: TextFormField(
-                controller: _surnameController,
-                decoration: const InputDecoration(labelText: 'Apellidos'),
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Introduce tus apellidos'
-                    : null,
+              const SizedBox(width: 16),
+              Expanded(
+                child: TextFormField(
+                  controller: _surnameController,
+                  decoration: const InputDecoration(labelText: 'Apellidos'),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Introduce tus apellidos'
+                      : null,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         isActive: _currentStep >= 0,
       ),
@@ -119,61 +139,65 @@ class _RsvpSectionState extends State<RsvpSection>
             Text('Asistencia y transporte')
           ],
         ),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CheckboxListTile(
-              value: attending,
-              onChanged: (value) {
-                setState(() {
-                  attending = value!;
-                  if (!attending) {
-                    needsBus = false;
-                    selectedBus = null;
-                  }
-                });
-              },
-              title: const Text('Voy a asistir'),
-            ),
-            if (attending)
-              Padding(
-                padding: const EdgeInsets.only(left: 24.0),
-                child: Column(
-                  children: [
-                    CheckboxListTile(
-                      value: needsBus,
-                      onChanged: (value) => setState(() {
-                        needsBus = value!;
-                        if (!needsBus) selectedBus = null;
-                      }),
-                      title: const Text('Necesito autobús'),
-                    ),
-                    if (needsBus)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 24.0),
-                        child: Column(
-                          children: [
-                            RadioListTile(
-                              value: 'valencia',
-                              groupValue: selectedBus,
-                              onChanged: (value) => setState(
-                                  () => selectedBus = value as String?),
-                              title: const Text('Autobús desde Valencia'),
-                            ),
-                            RadioListTile(
-                              value: 'viver',
-                              groupValue: selectedBus,
-                              onChanged: (value) => setState(
-                                  () => selectedBus = value as String?),
-                              title: const Text('Autobús desde Viver'),
-                            ),
-                          ],
-                        ),
-                      )
-                  ],
-                ),
+        content: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: Column(
+            key: ValueKey(_currentStep),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CheckboxListTile(
+                value: attending,
+                onChanged: (value) {
+                  setState(() {
+                    attending = value!;
+                    if (!attending) {
+                      needsBus = false;
+                      selectedBus = null;
+                    }
+                  });
+                },
+                title: const Text('Voy a asistir'),
               ),
-          ],
+              if (attending)
+                Padding(
+                  padding: const EdgeInsets.only(left: 24.0),
+                  child: Column(
+                    children: [
+                      CheckboxListTile(
+                        value: needsBus,
+                        onChanged: (value) => setState(() {
+                          needsBus = value!;
+                          if (!needsBus) selectedBus = null;
+                        }),
+                        title: const Text('Necesito autobús'),
+                      ),
+                      if (needsBus)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 24.0),
+                          child: Column(
+                            children: [
+                              RadioListTile(
+                                value: 'valencia',
+                                groupValue: selectedBus,
+                                onChanged: (value) => setState(
+                                    () => selectedBus = value as String?),
+                                title: const Text('Autobús desde Valencia'),
+                              ),
+                              RadioListTile(
+                                value: 'viver',
+                                groupValue: selectedBus,
+                                onChanged: (value) => setState(
+                                    () => selectedBus = value as String?),
+                                title: const Text('Autobús desde Viver'),
+                              ),
+                            ],
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
         isActive: _currentStep >= 1,
       ),
@@ -185,52 +209,56 @@ class _RsvpSectionState extends State<RsvpSection>
             Text('Acompañante y niños')
           ],
         ),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CheckboxListTile(
-              value: hasCompanion,
-              onChanged: (value) => setState(() => hasCompanion = value!),
-              title: const Text('Voy con acompañante'),
-            ),
-            if (hasCompanion)
-              Padding(
-                padding: const EdgeInsets.only(left: 24.0),
-                child: TextFormField(
-                  controller: _companionNameController,
-                  decoration: const InputDecoration(
-                      labelText: 'Nombre del acompañante'),
-                  validator: (value) {
-                    if (hasCompanion && (value == null || value.isEmpty)) {
-                      return 'Introduce el nombre del acompañante';
-                    }
-                    return null;
-                  },
-                ),
+        content: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: Column(
+            key: ValueKey(_currentStep),
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CheckboxListTile(
+                value: hasCompanion,
+                onChanged: (value) => setState(() => hasCompanion = value!),
+                title: const Text('Voy con acompañante'),
               ),
-            CheckboxListTile(
-              value: hasChildren,
-              onChanged: (value) => setState(() => hasChildren = value!),
-              title: const Text('Vamos con niños'),
-            ),
-            if (hasChildren)
-              Padding(
-                padding: const EdgeInsets.only(left: 24.0),
-                child: TextFormField(
-                  controller: _childrenCountController,
-                  decoration:
-                      const InputDecoration(labelText: '¿Cuántos niños?'),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: (value) {
-                    if (hasChildren && (value == null || value.isEmpty)) {
-                      return 'Indica cuántos niños';
-                    }
-                    return null;
-                  },
+              if (hasCompanion)
+                Padding(
+                  padding: const EdgeInsets.only(left: 24.0),
+                  child: TextFormField(
+                    controller: _companionNameController,
+                    decoration: const InputDecoration(
+                        labelText: 'Nombre del acompañante'),
+                    validator: (value) {
+                      if (hasCompanion && (value == null || value.isEmpty)) {
+                        return 'Introduce el nombre del acompañante';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
+              CheckboxListTile(
+                value: hasChildren,
+                onChanged: (value) => setState(() => hasChildren = value!),
+                title: const Text('Vamos con niños'),
               ),
-          ],
+              if (hasChildren)
+                Padding(
+                  padding: const EdgeInsets.only(left: 24.0),
+                  child: TextFormField(
+                    controller: _childrenCountController,
+                    decoration:
+                        const InputDecoration(labelText: '¿Cuántos niños?'),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: (value) {
+                      if (hasChildren && (value == null || value.isEmpty)) {
+                        return 'Indica cuántos niños';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+            ],
+          ),
         ),
         isActive: _currentStep >= 2,
       ),
@@ -242,55 +270,73 @@ class _RsvpSectionState extends State<RsvpSection>
             Text('Extras')
           ],
         ),
-        content: Column(
-          children: [
-            TextFormField(
-              controller: _allergiesController,
-              decoration:
-                  const InputDecoration(labelText: 'Alergias o preferencias'),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _songsController,
-              decoration: const InputDecoration(
-                  labelText: 'Canciones que no pueden faltar'),
-            ),
-            const SizedBox(height: 16),
-            CheckboxListTile(
-              value: wantsTomorrowland,
-              onChanged: (value) => setState(() => wantsTomorrowland = value!),
-              title: const Text('¡Me apunto a Tomorrowland!'),
-            ),
-            const SizedBox(height: 24),
-            if (!formSubmitted)
-              ElevatedButton(
-                onPressed: isSubmitting ? null : _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        content: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          child: Column(
+            key: ValueKey(_currentStep),
+            children: [
+              TextFormField(
+                controller: _allergiesController,
+                decoration:
+                    const InputDecoration(labelText: 'Alergias o preferencias'),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _songsController,
+                decoration: const InputDecoration(
+                    labelText: 'Canciones que no pueden faltar'),
+              ),
+              const SizedBox(height: 16),
+              CheckboxListTile(
+                value: wantsTomorrowland,
+                onChanged: (value) =>
+                    setState(() => wantsTomorrowland = value!),
+                title: const Text('¡Me apunto a Tomorrowland!'),
+              ),
+              const SizedBox(height: 24),
+              if (!formSubmitted)
+                ElevatedButton(
+                  onPressed: isSubmitting ? null : _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                  ),
+                  child: isSubmitting
+                      ? SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                            valueColor: _submitAnimationController.drive(
+                              ColorTween(
+                                  begin: Colors.white38, end: Colors.white),
+                            ),
+                          ),
+                        )
+                      : const Text('Confirmar'),
                 ),
-                child: const Text('Confirmar'),
-              ),
-            if (formSubmitted) ...[
-              const SizedBox(height: 40),
-              Text(
-                'Si quieres hacernos un regalito, aquí tienes nuestro número de cuenta 😉:',
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              SelectableText(
-                'ES12 3456 7890 1234 5678 9012',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge
-                    ?.copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
+              if (formSubmitted) ...[
+                const SizedBox(height: 40),
+                Text(
+                  'Si quieres hacernos un regalito, aquí tienes nuestro número de cuenta 😉:',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                SelectableText(
+                  'ES12 3456 7890 1234 5678 9012',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ],
-          ],
+          ),
         ),
         isActive: _currentStep >= 3,
         state: formSubmitted ? StepState.complete : StepState.indexed,
