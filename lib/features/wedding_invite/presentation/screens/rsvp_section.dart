@@ -154,99 +154,105 @@ class _RsvpSectionState extends State<RsvpSection>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          VisibilityDetector(
-            key: const Key('rsvp_section_intro'),
-            onVisibilityChanged: (info) {
-              if (info.visibleFraction > 0.1 && !_visible) {
-                _controller.forward();
-                setState(() => _visible = true);
-              }
-            },
-            child: FadeTransition(
-              opacity: _fadeAnimation,
-              child: SlideTransition(
-                position: _slideAnimation,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Confirma tu asistencia 💌',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Si quieres hacernos un regalito, aquí tienes nuestro número de cuenta 😉:',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    SelectableText(
-                      'ES12 3456 7890 1234 5678 9012',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 40),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Form(
-            key: _formKey,
-            child: Stepper(
-              type: StepperType.vertical,
-              currentStep: _currentStep,
-              onStepContinue: _handleStepContinue,
-              onStepCancel: () {
-                if (_currentStep > 0 && !formSubmitted) {
-                  setState(() => _currentStep -= 1);
+    return GestureDetector(
+      onTap: () =>
+          FocusScope.of(context).unfocus(), // Cierra teclado al tocar fuera
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            VisibilityDetector(
+              key: const Key('rsvp_section_intro'),
+              onVisibilityChanged: (info) {
+                if (info.visibleFraction > 0.1 && !_visible) {
+                  _controller.forward();
+                  setState(() => _visible = true);
                 }
               },
-              steps: getSteps(),
-              controlsBuilder: (context, details) => Padding(
-                padding: const EdgeInsets.only(top: 24.0, bottom: 80),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (_currentStep > 0 && !formSubmitted)
-                      ElevatedButton(
-                        onPressed: details.onStepCancel,
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                        ),
-                        child: const Text('Atrás'),
-                      )
-                    else
-                      const SizedBox(),
-                    if (_currentStep < getSteps().length - 1 && !formSubmitted)
-                      ElevatedButton(
-                        onPressed: details.onStepContinue,
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                        ),
-                        child: const Text('Continuar'),
-                      )
-                    else
-                      const SizedBox(),
-                  ],
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Confirma tu asistencia 💌',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        'Si quieres hacernos un regalito, aquí tienes nuestro número de cuenta 😉:',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      SelectableText(
+                        'ES12 3456 7890 1234 5678 9012',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            Form(
+              key: _formKey,
+              child: Stepper(
+                type: StepperType.vertical,
+                physics: const ClampingScrollPhysics(), // asegura buen scroll
+                currentStep: _currentStep,
+                onStepContinue: _handleStepContinue,
+                onStepCancel: () {
+                  if (_currentStep > 0 && !formSubmitted) {
+                    setState(() => _currentStep -= 1);
+                  }
+                },
+                steps: getSteps(),
+                controlsBuilder: (context, details) => Padding(
+                  padding: const EdgeInsets.only(top: 24.0, bottom: 80),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (_currentStep > 0 && !formSubmitted)
+                        ElevatedButton(
+                          onPressed: details.onStepCancel,
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                          ),
+                          child: const Text('Atrás'),
+                        )
+                      else
+                        const SizedBox(),
+                      if (_currentStep < getSteps().length - 1 &&
+                          !formSubmitted)
+                        ElevatedButton(
+                          onPressed: details.onStepContinue,
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          ),
+                          child: const Text('Continuar'),
+                        )
+                      else
+                        const SizedBox(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
