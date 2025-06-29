@@ -27,6 +27,7 @@ class _InvitationScreenState extends State<InvitationScreen> {
     // Precarga de imágenes tras montar el widget
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _precargarImagenes();
+      _iniciarMusica();
     });
   }
 
