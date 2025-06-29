@@ -86,13 +86,21 @@ class _RsvpSectionState extends State<RsvpSection>
       });
 
       final rsvp = Rsvp(
-        name: _nameController.text + " " + _surnameController.text,
-        isAttending: attending,
-        allergies: _allergiesController.text,
-        songRequests: _songsController.text,
-        children: hasChildren ? _childrenCountController.text : '',
-        tomorrowland: wantsTomorrowland,
-      );
+          name: _nameController.text + " " + _surnameController.text,
+          isAttending: attending,
+          bus: needsBus ? selectedBus : '',
+          allergies: _allergiesController.text,
+          songRequests: _songsController.text,
+          companionName: hasCompanion ? _companionNameController.text : '',
+          children: hasChildren ? _childrenCountController.text : '',
+          childrenNames: hasChildren
+              ? _childNameControllers.map((c) => c.text).toList()
+              : [],
+          childrenAges: hasChildren
+              ? _childAgeControllers.map((c) => c.text).toList()
+              : [],
+          tomorrowland: wantsTomorrowland,
+          createdAt: DateTime.now().toIso8601String());
 
       final repository = RsvpRepositoryImpl();
       final usecase = ConfirmRsvp(repository);

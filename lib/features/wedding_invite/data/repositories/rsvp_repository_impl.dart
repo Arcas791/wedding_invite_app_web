@@ -33,12 +33,15 @@ class RsvpRepositoryImpl implements RsvpRepository {
       body: jsonEncode({
         'name': rsvp.name,
         'isAttending': rsvp.isAttending,
+        'bus': rsvp.bus,
         'allergies': rsvp.allergies,
         'songRequests': rsvp.songRequests,
+        'companionName': rsvp.companionName,
         'children': rsvp.children,
+        'childrenNames': rsvp.childrenNames,
+        "childrenAges": rsvp.childrenAges,
         'tomorrowland': rsvp.tomorrowland,
-        'email':
-            'fake@email.com', // puedes ajustarlo si quieres que venga del modelo
+        'createdAt': rsvp.createdAt,
       }),
     );
 
