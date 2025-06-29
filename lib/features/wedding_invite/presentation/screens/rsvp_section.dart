@@ -111,7 +111,7 @@ class _RsvpSectionState extends State<RsvpSection>
         formSubmitted = true;
         isSubmitting = false;
         _submitAnimationController.stop();
-        _currentStep = 3;
+        _currentStep = getSteps().length - 1;
       });
 
       showDialog(
@@ -163,8 +163,7 @@ class _RsvpSectionState extends State<RsvpSection>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () =>
-          FocusScope.of(context).unfocus(), // Cierra teclado al tocar fuera
+      onTap: () => FocusScope.of(context).unfocus(),
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
         child: Column(
@@ -190,21 +189,6 @@ class _RsvpSectionState extends State<RsvpSection>
                         style: Theme.of(context).textTheme.headlineMedium,
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Si quieres hacernos un regalito, aquí tienes nuestro número de cuenta 😉:',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 12),
-                      SelectableText(
-                        'ES12 3456 7890 1234 5678 9012',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
                       const SizedBox(height: 40),
                     ],
                   ),
@@ -215,7 +199,7 @@ class _RsvpSectionState extends State<RsvpSection>
               key: _formKey,
               child: Stepper(
                 type: StepperType.vertical,
-                physics: const ClampingScrollPhysics(), // asegura buen scroll
+                physics: const ClampingScrollPhysics(),
                 currentStep: _currentStep,
                 onStepContinue: _handleStepContinue,
                 onStepCancel: () {
@@ -225,7 +209,7 @@ class _RsvpSectionState extends State<RsvpSection>
                 },
                 steps: getSteps(),
                 controlsBuilder: (context, details) => Padding(
-                  padding: const EdgeInsets.only(top: 24.0, bottom: 80),
+                  padding: const EdgeInsets.only(top: 24.0, bottom: 40),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -252,6 +236,34 @@ class _RsvpSectionState extends State<RsvpSection>
                           ),
                           child: const Text('Continuar'),
                         )
+                      else if (_currentStep == getSteps().length - 1 &&
+                          !formSubmitted)
+                        ElevatedButton(
+                          onPressed: isSubmitting ? null : _submitForm,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                          ),
+                          child: isSubmitting
+                              ? SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                    valueColor:
+                                        _submitAnimationController.drive(
+                                      ColorTween(
+                                          begin: Colors.white38,
+                                          end: Colors.white),
+                                    ),
+                                  ),
+                                )
+                              : const Text('Confirmar'),
+                        )
                       else
                         const SizedBox(),
                     ],
@@ -259,6 +271,22 @@ class _RsvpSectionState extends State<RsvpSection>
                 ),
               ),
             ),
+            const SizedBox(height: 40),
+            Text(
+              'Número de cuenta:',
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            SelectableText(
+              'ES12 3456 7890 1234 5678 9012',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -485,64 +513,43 @@ class _RsvpSectionState extends State<RsvpSection>
             Text('Extras')
           ],
         ),
-        content: formSubmitted
-            ? const SizedBox.shrink()
-            : Column(
-                children: [
-                  TextFormField(
-                    controller: _allergiesController,
-                    decoration: const InputDecoration(
-                      labelText: 'Alergias o intolerancias',
-                      isDense: false,
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _songsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Canciones que no falten',
-                      isDense: false,
-                      floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    ),
-                    maxLines: null,
-                    minLines: 1,
-                    keyboardType: TextInputType.multiline,
-                  ),
-                  const SizedBox(height: 16),
-                  CheckboxListTile(
-                    value: wantsTomorrowland,
-                    onChanged: (value) =>
-                        setState(() => wantsTomorrowland = value!),
-                    title: const Text('¡Me apunto a Tomorrowland!'),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: isSubmitting ? null : _submitForm,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                    ),
-                    child: isSubmitting
-                        ? SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                              valueColor: _submitAnimationController.drive(
-                                ColorTween(
-                                    begin: Colors.white38, end: Colors.white),
-                              ),
-                            ),
-                          )
-                        : const Text('Confirmar'),
-                  ),
-                ],
+        content: Column(
+          children: [
+            TextFormField(
+              controller: _allergiesController,
+              decoration: const InputDecoration(
+                labelText: 'Alergias o intolerancias',
               ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _songsController,
+              decoration: const InputDecoration(
+                labelText: 'Canciones que no falten',
+              ),
+              maxLines: null,
+              minLines: 1,
+              keyboardType: TextInputType.multiline,
+            ),
+          ],
+        ),
         isActive: _currentStep >= 3,
+        state: formSubmitted ? StepState.complete : StepState.indexed,
+      ),
+      Step(
+        title: Row(
+          children: const [
+            Icon(Icons.event),
+            SizedBox(width: 8),
+            Text('Tomorrowland')
+          ],
+        ),
+        content: CheckboxListTile(
+          value: wantsTomorrowland,
+          onChanged: (value) => setState(() => wantsTomorrowland = value!),
+          title: const Text('¡Me apunto a Tomorrowland!'),
+        ),
+        isActive: _currentStep >= 4,
         state: formSubmitted ? StepState.complete : StepState.indexed,
       ),
     ];
