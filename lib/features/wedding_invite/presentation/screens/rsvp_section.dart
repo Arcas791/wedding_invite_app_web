@@ -111,7 +111,7 @@ class _RsvpSectionState extends State<RsvpSection>
         formSubmitted = true;
         isSubmitting = false;
         _submitAnimationController.stop();
-        _currentStep = getSteps().length - 1;
+        _currentStep = 0;
       });
 
       showDialog(
@@ -195,82 +195,94 @@ class _RsvpSectionState extends State<RsvpSection>
                 ),
               ),
             ),
-            Form(
-              key: _formKey,
-              child: Stepper(
-                type: StepperType.vertical,
-                physics: const ClampingScrollPhysics(),
-                currentStep: _currentStep,
-                onStepContinue: _handleStepContinue,
-                onStepCancel: () {
-                  if (_currentStep > 0 && !formSubmitted) {
-                    setState(() => _currentStep -= 1);
-                  }
-                },
-                steps: getSteps(),
-                controlsBuilder: (context, details) => Padding(
-                  padding: const EdgeInsets.only(top: 24.0, bottom: 40),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (_currentStep > 0 && !formSubmitted)
-                        ElevatedButton(
-                          onPressed: details.onStepCancel,
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                          child: const Text('Atrás'),
-                        )
-                      else
-                        const SizedBox(),
-                      if (_currentStep < getSteps().length - 1 &&
-                          !formSubmitted)
-                        ElevatedButton(
-                          onPressed: details.onStepContinue,
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                          ),
-                          child: const Text('Continuar'),
-                        )
-                      else if (_currentStep == getSteps().length - 1 &&
-                          !formSubmitted)
-                        ElevatedButton(
-                          onPressed: isSubmitting ? null : _submitForm,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 12),
-                          ),
-                          child: isSubmitting
-                              ? SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                    valueColor:
-                                        _submitAnimationController.drive(
-                                      ColorTween(
-                                          begin: Colors.white38,
-                                          end: Colors.white),
+            if (!formSubmitted)
+              Form(
+                key: _formKey,
+                child: Stepper(
+                  type: StepperType.vertical,
+                  physics: const ClampingScrollPhysics(),
+                  currentStep: _currentStep,
+                  onStepContinue: _handleStepContinue,
+                  onStepCancel: () {
+                    if (_currentStep > 0) {
+                      setState(() => _currentStep -= 1);
+                    }
+                  },
+                  steps: getSteps(),
+                  controlsBuilder: (context, details) => Padding(
+                    padding: const EdgeInsets.only(top: 24.0, bottom: 40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (_currentStep > 0)
+                          ElevatedButton(
+                            onPressed: details.onStepCancel,
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                            ),
+                            child: const Text('Atrás'),
+                          )
+                        else
+                          const SizedBox(),
+                        if (_currentStep < getSteps().length - 1)
+                          ElevatedButton(
+                            onPressed: details.onStepContinue,
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                            ),
+                            child: const Text('Continuar'),
+                          )
+                        else
+                          ElevatedButton(
+                            onPressed: isSubmitting ? null : _submitForm,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                            ),
+                            child: isSubmitting
+                                ? SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                      valueColor:
+                                          _submitAnimationController.drive(
+                                        ColorTween(
+                                            begin: Colors.white38,
+                                            end: Colors.white),
+                                      ),
                                     ),
-                                  ),
-                                )
-                              : const Text('Confirmar'),
-                        )
-                      else
-                        const SizedBox(),
-                    ],
+                                  )
+                                : const Text('Confirmar'),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
+              )
+            else
+              Column(
+                children: [
+                  const SizedBox(height: 40),
+                  Icon(Icons.check_circle_outline,
+                      size: 64, color: Theme.of(context).colorScheme.primary),
+                  const SizedBox(height: 20),
+                  Text(
+                    '¡Gracias por confirmar!',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-            ),
             const SizedBox(height: 40),
             Text(
               'Número de cuenta:',
@@ -336,7 +348,8 @@ class _RsvpSectionState extends State<RsvpSection>
             ),
           ],
         ),
-        isActive: _currentStep >= 0,
+        isActive: !formSubmitted,
+        state: formSubmitted ? StepState.complete : StepState.indexed,
       ),
       Step(
         title: Row(
@@ -409,7 +422,8 @@ class _RsvpSectionState extends State<RsvpSection>
               ),
           ],
         ),
-        isActive: _currentStep >= 1,
+        isActive: !formSubmitted,
+        state: formSubmitted ? StepState.complete : StepState.indexed,
       ),
       Step(
         title: Row(
@@ -503,7 +517,8 @@ class _RsvpSectionState extends State<RsvpSection>
               ),
           ],
         ),
-        isActive: _currentStep >= 2,
+        isActive: !formSubmitted,
+        state: formSubmitted ? StepState.complete : StepState.indexed,
       ),
       Step(
         title: Row(
@@ -533,7 +548,7 @@ class _RsvpSectionState extends State<RsvpSection>
             ),
           ],
         ),
-        isActive: _currentStep >= 3,
+        isActive: !formSubmitted,
         state: formSubmitted ? StepState.complete : StepState.indexed,
       ),
       Step(
@@ -549,7 +564,7 @@ class _RsvpSectionState extends State<RsvpSection>
           onChanged: (value) => setState(() => wantsTomorrowland = value!),
           title: const Text('¡Me apunto a Tomorrowland!'),
         ),
-        isActive: _currentStep >= 4,
+        isActive: !formSubmitted,
         state: formSubmitted ? StepState.complete : StepState.indexed,
       ),
     ];
