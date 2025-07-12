@@ -64,27 +64,42 @@ class _LandingSectionState extends State<LandingSection> {
         ),
         SizedBox(
           height: sectionHeight,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '¡Nos casamos!',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge
-                      ?.copyWith(color: Colors.white),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 100.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        '¡Nos casamos!',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineLarge
+                            ?.copyWith(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              //color: Colors.white,
+                              fontSize: 65,
+                              fontWeight: FontWeight.bold,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _format(_remaining),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              //color: Colors.white,
+                              fontSize: 24,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  _format(_remaining),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(color: Colors.white),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
