@@ -100,7 +100,7 @@ class _VenueSectionState extends State<VenueSection>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Creemos que es un lugar con mucho encanto donde celebraremos cada momento de este día tan especial con todos vosotros 🤗🤗🤗.',
+                  'Creemos que es un lugar con mucho encanto, donde celebraremos cada momento de este día tan especial con todos vosotros 🤗.',
                   style: Theme.of(context).textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),

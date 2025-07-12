@@ -16,14 +16,33 @@ class _StorySectionState extends State<StorySection>
   Timer? _carouselTimer;
 
   final List<String> _images = [
-    'assets/images/historia1.jpg',
-    'assets/images/historia2.jpg',
     'assets/images/historia3.jpg',
+    'assets/images/historia5.jpg',
+    'assets/images/historia6.jpg',
+    'assets/images/historia9.jpg',
+    'assets/images/historia12.jpg',
+    'assets/images/historia15.jpg',
+    'assets/images/historia19.jpg',
+    'assets/images/historia20.jpg',
+    'assets/images/historia23.jpg',
+    'assets/images/historia24.jpg',
+    'assets/images/historia25.jpg',
+    'assets/images/historia26.jpg',
+    'assets/images/historia27.jpg',
+    'assets/images/historia29.jpg',
+    'assets/images/historia30.jpg',
+    'assets/images/historia32.jpg',
+    'assets/images/historia34.jpg',
+    'assets/images/historia35.jpg',
+    'assets/images/historia36.jpg',
+    'assets/images/historia37.jpg',
+    'assets/images/historia38.jpg',
+    'assets/images/historia39.jpg',
   ];
 
   final String _storyText = '''
 Todo empezó un sábado cualquiera con el típico "esmorçar de la terreta"...
-Desde ese momento, cada paso que hemos dado, nos ha llevado hasta aquí 🫶🏼.
+Desde ese momento, cada paso que hemos dado nos ha llevado hasta aquí.
 Queremos hacer de este día algo especial y compartirlo con vosotros nos parece un auténtico regalo.''';
 
   late AnimationController _animationController;
@@ -35,7 +54,6 @@ Queremos hacer de este día algo especial y compartirlo con vosotros nos parece 
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8);
-    _startAutoPlay();
 
     _animationController = AnimationController(
       vsync: this,
@@ -55,7 +73,8 @@ Queremos hacer de este día algo especial y compartirlo con vosotros nos parece 
   }
 
   void _startAutoPlay() {
-    _carouselTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    _carouselTimer =
+        Timer.periodic(const Duration(milliseconds: 2500), (timer) {
       final nextPage = (_currentPage + 1) % _images.length;
       _pageController.animateToPage(
         nextPage,
@@ -98,6 +117,7 @@ Queremos hacer de este día algo especial y compartirlo con vosotros nos parece 
         if (info.visibleFraction > 0.1 && !_visible) {
           _visible = true;
           _animationController.forward();
+          _startAutoPlay();
         }
       },
       child: FadeTransition(

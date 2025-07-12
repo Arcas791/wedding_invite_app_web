@@ -61,9 +61,28 @@ flutter:
 
   assets:
     - assets/images/novios.jpg
-    - assets/images/historia1.jpg
-    - assets/images/historia2.jpg
     - assets/images/historia3.jpg
+    - assets/images/historia5.jpg
+    - assets/images/historia6.jpg
+    - assets/images/historia9.jpg
+    - assets/images/historia12.jpg
+    - assets/images/historia15.jpg
+    - assets/images/historia19.jpg
+    - assets/images/historia20.jpg
+    - assets/images/historia23.jpg
+    - assets/images/historia24.jpg
+    - assets/images/historia25.jpg
+    - assets/images/historia26.jpg
+    - assets/images/historia27.jpg
+    - assets/images/historia29.jpg
+    - assets/images/historia30.jpg
+    - assets/images/historia32.jpg
+    - assets/images/historia34.jpg
+    - assets/images/historia35.jpg
+    - assets/images/historia36.jpg
+    - assets/images/historia37.jpg
+    - assets/images/historia38.jpg
+    - assets/images/historia39.jpg
     - assets/images/masia.jpg
     - assets/images/el_barto.jpg
     - assets/icons/map_route.png

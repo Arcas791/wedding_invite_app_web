@@ -11,7 +11,7 @@ class WeddingPlanSection extends StatefulWidget {
 class _WeddingPlanSectionState extends State<WeddingPlanSection>
     with TickerProviderStateMixin {
   final List<_Evento> eventos = [
-    _Evento('16:15h', 'Autobús', Icons.directions_bus_filled),
+    _Evento('16:15h o 16:45h', 'Autobús', Icons.directions_bus_filled),
     _Evento('17:30h', 'Recepción', Icons.waving_hand),
     _Evento('18:00h', 'Ceremonia', Icons.volunteer_activism),
     _Evento('19:00h', 'Cóctel', Icons.local_bar),

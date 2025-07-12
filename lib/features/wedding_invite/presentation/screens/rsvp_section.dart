@@ -556,13 +556,14 @@ class _RsvpSectionState extends State<RsvpSection>
           children: const [
             Icon(Icons.event),
             SizedBox(width: 8),
-            Text('Tomorrowland')
+            Text('Tomorrowland 2026')
           ],
         ),
         content: CheckboxListTile(
           value: wantsTomorrowland,
           onChanged: (value) => setState(() => wantsTomorrowland = value!),
-          title: const Text('¡Me apunto a Tomorrowland!'),
+          title: const Text(
+              'Estoy dispuest@ a gastarme 2k€ para dormir en una tienda de campaña durante 5 días, escuchar música techno a todas horas y bailar sin parar.'),
         ),
         isActive: !formSubmitted,
         state: formSubmitted ? StepState.complete : StepState.indexed,
