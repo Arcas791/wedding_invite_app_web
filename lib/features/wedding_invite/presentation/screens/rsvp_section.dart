@@ -291,7 +291,7 @@ class _RsvpSectionState extends State<RsvpSection>
             ),
             const SizedBox(height: 12),
             SelectableText(
-              'ES12 3456 7890 1234 5678 9012',
+              'ES85 0073 0100 5608 5557 0938',
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
