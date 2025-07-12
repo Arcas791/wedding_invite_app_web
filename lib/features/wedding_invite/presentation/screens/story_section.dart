@@ -70,6 +70,15 @@ Queremos hacer de este día algo especial y compartirlo con vosotros nos parece 
     ).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
+
+    // Precarga de imágenes tras montaje
+    WidgetsBinding.instance.addPostFrameCallback((_) => _precargarImagenes());
+  }
+
+  void _precargarImagenes() {
+    for (final path in _images) {
+      precacheImage(AssetImage(path), context);
+    }
   }
 
   void _startAutoPlay() {
