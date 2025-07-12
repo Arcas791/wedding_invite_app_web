@@ -19,7 +19,6 @@ class _InvitationScreenState extends State<InvitationScreen>
     with WidgetsBindingObserver {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _musicaIniciada = false;
-  bool _musicaIniciandose = false;
   bool formEnviado = false;
 
   @override
@@ -27,7 +26,6 @@ class _InvitationScreenState extends State<InvitationScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // Precarga de imágenes tras montar el widget
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _precargarImagenes();
     });
@@ -46,22 +44,15 @@ class _InvitationScreenState extends State<InvitationScreen>
   }
 
   Future<void> _iniciarMusica() async {
-    if (_musicaIniciada || _musicaIniciandose) return;
-
-    _musicaIniciandose = true;
-    print("🎵 Intentando iniciar música...");
+    if (_musicaIniciada) return;
 
     try {
       await _audioPlayer.setAsset('assets/audio/entrada.mp3');
       await _audioPlayer.play();
-      setState(() {
-        _musicaIniciada = true;
-      });
-      print("🎵 Música iniciada correctamente.");
+      setState(() => _musicaIniciada = true);
+      print("🎵 Música iniciada");
     } catch (e) {
       print('❌ Error al reproducir música: $e');
-    } finally {
-      _musicaIniciandose = false;
     }
   }
 
@@ -85,26 +76,16 @@ class _InvitationScreenState extends State<InvitationScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5EBDD),
-      body: Listener(
-        onPointerDown: (_) => _iniciarMusica(), // Clic/tap
-        onPointerSignal: (_) => _iniciarMusica(), // Scroll de ratón
-        child: NotificationListener<ScrollNotification>(
-          onNotification: (scroll) {
-            _iniciarMusica(); // Scroll táctil o de trackpad
-            return false;
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const LandingSection(),
-                const StorySection(),
-                const WeddingPlanSection(),
-                const VenueSection(),
-                RsvpSection(onConfirmado: onFormularioEnviado),
-                if (formEnviado) const FakeCreditSection(),
-              ],
-            ),
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            LandingSection(onMusicaConsentida: _iniciarMusica),
+            const StorySection(),
+            const WeddingPlanSection(),
+            const VenueSection(),
+            RsvpSection(onConfirmado: onFormularioEnviado),
+            if (formEnviado) const FakeCreditSection(),
+          ],
         ),
       ),
     );

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class LandingSection extends StatefulWidget {
-  const LandingSection({super.key});
+  final VoidCallback onMusicaConsentida;
+
+  const LandingSection({super.key, required this.onMusicaConsentida});
 
   @override
   State<LandingSection> createState() => _LandingSectionState();
@@ -21,6 +23,10 @@ class _LandingSectionState extends State<LandingSection> {
     _updateRemaining();
     _timer =
         Timer.periodic(const Duration(seconds: 1), (_) => _updateRemaining());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mostrarPopupMusica();
+    });
   }
 
   void _updateRemaining() {
@@ -34,6 +40,32 @@ class _LandingSectionState extends State<LandingSection> {
   void dispose() {
     _timer.cancel();
     super.dispose();
+  }
+
+  Future<void> _mostrarPopupMusica() async {
+    final activar = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        //title: const Text('¿Activar música de fondo?'),
+        content: const Text(
+          '¿Quieres ver la invitación con buena música? ^^',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Sí'),
+          ),
+        ],
+      ),
+    );
+
+    if (activar == true) {
+      widget.onMusicaConsentida();
+    }
   }
 
   String _format(Duration d) {
@@ -79,8 +111,7 @@ class _LandingSectionState extends State<LandingSection> {
                             .headlineLarge
                             ?.copyWith(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              //color: Colors.white,
-                              fontSize: 65,
+                              fontSize: 50,
                               fontWeight: FontWeight.bold,
                             ),
                         textAlign: TextAlign.center,
@@ -90,7 +121,6 @@ class _LandingSectionState extends State<LandingSection> {
                         _format(_remaining),
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              //color: Colors.white,
                               fontSize: 24,
                             ),
                         textAlign: TextAlign.center,
